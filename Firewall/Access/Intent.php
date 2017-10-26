@@ -68,10 +68,6 @@ final class Intent
         {
             case('googlebot'):
                 return $this->validateGoogleBot();
-                break;            
-				
-			case('duckduckbot'):
-                return $this->validateDuck();
                 break;
 
             case('bingbot'):
@@ -82,6 +78,10 @@ final class Intent
             case('slurp'):
             case('yahoo'):
                 return $this->validateYahoo();
+                break;
+
+            case('duckduckbot'):
+                return $this->validateDuck();
                 break;
 
             default:
@@ -150,10 +150,10 @@ final class Intent
      */
     private function validateDuck()
     {
-	    if( ! isset( $this->policy['duck_allow'] ) ) {
-		    return false;
-		}
-		
+        if( ! isset( $this->policy['duck_allow'] ) ) {
+            return false;
+        }
+
         if( mb_stripos( $this->ua, 'duckduckbot' ) !== false )
         {
             if( IpFilter::inCidrList( $this->ip, $this->policy['duck_allow'] ) ) {
