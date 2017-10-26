@@ -2,8 +2,8 @@
 
 Base filter types :
 
-  # Input    
-  # IP
-  # Proxy
+  Input
+  IP
+  Proxy
 
   
