@@ -36,7 +36,7 @@ final class Intent
      */
     public function __construct( $profile = [] )
     {
-        $this->profile = $profile;;
+        $this->profile = $profile;
 
         $this->ip = $this->profile['ip_addr'];
         $this->ua = $this->profile['useragent'];
