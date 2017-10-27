@@ -1,9 +1,10 @@
-# NinjaSentry Katana Filter
+# NinjaSentry Katana Filter  
 
-Base filter types :
+Base filter types :  
+  
+  Input  
+  IP  
+  Proxy  
+  
 
-  Input
-  IP
-  Proxy
-
-  ..    
+  ..
