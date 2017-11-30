@@ -12,16 +12,20 @@ use NinjaSentry\Katana\Filter\Ip as IpFilter;
 final class Intent
 {
     /**
+     * Client profile
      * @var array
      */
     private $profile = [];
 
     /**
+     * Validation policy 
      * @var array
      */
     private $policy = [];
 
     /**
+     * Remote ip address
+     * 
      * @var
      */
     private $ip;
@@ -55,6 +59,7 @@ final class Intent
     }
 
     /**
+     * Validate supported search engines
      * @param string $match
      * @return bool
      */
@@ -100,7 +105,7 @@ final class Intent
      */
     private function validateGoogleBot()
     {
-        if( mb_stripos( $this->ua, 'googlebot' ) !== false )
+        if( isset( $this->policy['google_allow'] ) ) 
         {
             if( IpFilter::inCidrList( $this->ip, $this->policy['google_allow'] ) ) {
                 return true;
@@ -116,14 +121,13 @@ final class Intent
      */
     private function validateBingBot()
     {
-        if( mb_stripos( $this->ua, 'bingbot' ) !== false ||
-            mb_stripos( $this->ua, 'msnbot' ) !== false
-        ) {
+        if( isset( $this->policy['microsoft_allow'] ) )
+        {
             if( IpFilter::inCidrList( $this->ip, $this->policy['microsoft_allow'] ) ) {
                 return true;
             }
         }
-
+        
         return false;
     }
 
@@ -133,14 +137,13 @@ final class Intent
      */
     private function validateYahoo()
     {
-        if( mb_stripos( $this->ua, 'yahoo' ) !== false ||
-            mb_stripos( $this->ua, 'slurp' ) !== false
-        ) {
+        if( isset( $this->policy['yahoo_allow'] ) ) 
+        {
             if( IpFilter::inCidrList( $this->ip, $this->policy['yahoo_allow'] ) ) {
                 return true;
             }
         }
-
+        
         return false;
     }
 
@@ -150,11 +153,7 @@ final class Intent
      */
     private function validateDuck()
     {
-        if( ! isset( $this->policy['duck_allow'] ) ) {
-            return false;
-        }
-
-        if( mb_stripos( $this->ua, 'duckduckbot' ) !== false )
+        if( isset( $this->policy['duck_allow'] ) ) 
         {
             if( IpFilter::inCidrList( $this->ip, $this->policy['duck_allow'] ) ) {
                 return true;
