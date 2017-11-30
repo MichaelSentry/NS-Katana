@@ -289,7 +289,7 @@ final class Guard
         {
             throw new \Exception(
                 'Form Guard Error :: validateFormToken() - '
-                . 'Form token does not match original CSRF token in session'
+                . 'CSRF token does not match original form token in session'
                 , Http\Status::BAD_REQUEST
             );
         }
