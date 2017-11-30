@@ -283,7 +283,7 @@ final class Guard
         }
         
         $csrfToken = $_POST[ Guard::CSRF_TOKEN ];
-        $formToken = $this->identity->get( self::FORM_TOKEN );
+        $formToken = $this->identity->get( Guard::FORM_TOKEN );
         
         if( false === ( hash_equals( $formToken, $csrfToken ) ) )
         {
