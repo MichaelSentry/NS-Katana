@@ -21,7 +21,7 @@ final class Guard
      * Form token hash algorithm
      */
     const HASH_ALGO = 'sha256';
-
+    
     /**
      * CSRF guard key
      */
@@ -36,23 +36,23 @@ final class Guard
      * Form fields key
      */
     const FORM_FIELDS = 'form_fields';
-
+    
     /**
      * Form action token key
      */
     const ACTION_TOKEN = 'action_token';
-
+    
     /**
      * @var \NinjaSentry\Sai\Authentication
      */
     public $identity;
-
+    
     /**
      * Form field map
      * @var array
      */
     private $fields = [];
-
+    
     /**
      * @param \NinjaSentry\Sai\Authentication $identity
      */
@@ -86,7 +86,7 @@ final class Guard
     
     /**
      * Lock form fields with a HMAC hash
-     * 
+     *
      * @param array $fields
      * @return array
      * @throws \Exception
@@ -119,12 +119,6 @@ final class Guard
                 );
             }
             
-            /*
-            $hashed[ $fieldName ] = \base64_encode(
-                \hash_hmac( self::HASH_ALGO, $fieldName, $this->appToken, true )
-            );
-            */
-            
             $hashed[ $fieldName ] = \base64_encode(
                 \hash_hmac( Guard::HASH_ALGO, $fieldName, $this->appToken )
             );
@@ -135,32 +129,40 @@ final class Guard
     
     /**
      * Enforce form guard protections
-     * 
+     *
      * @param \NinjaSentry\Sai\Http\Route $route
      * @throws \Exception
      */
     public function enforce( Http\Route $route )
     {
         $this->validateActionToken( $route );
-
+        $this->getFields();
+        $this->fieldsMatch();
+        $this->rewritePost();
+        $this->validateFormToken();
+    }
+    
+    /**
+     * Get form fields from session data
+     *
+     * @throws \Exception
+     */
+    private function getFields()
+    {
         if( ! $this->identity->has( Guard::FORM_FIELDS ) )
         {
             throw new \Exception(
                 'Form Guard Error :: rewritePost() - '
                 . 'Required session key ( '
-                . Guard::FORM_FIELDS 
+                . Guard::FORM_FIELDS
                 . ' ) was not found'
                 , Http\Status::SERVICE_UNAVAILABLE
             );
         }
-    
-        $this->fields = $this->identity->get( Guard::FORM_FIELDS );
         
-        $this->fieldsMatch();
-        $this->rewritePost();
-        $this->validateFormToken();
+        $this->fields = $this->identity->get( Guard::FORM_FIELDS );
     }
-
+    
     /**
      * Form action url token validation
      * @param \NinjaSentry\Sai\Http\Route $route
@@ -191,11 +193,11 @@ final class Guard
                 , Http\Status::SERVICE_UNAVAILABLE
             );
         }
-
+        
         if( false === ( hash_equals( $sessionToken, $requestToken ) ) )
         {
             throw new \Exception(
-                'FormGuard Error :: validateActionToken() - ' 
+                'FormGuard Error :: validateActionToken() - '
                 . 'Form action token failed validation [ no match found ]'
                 , Http\Status::BAD_REQUEST
             );
@@ -229,7 +231,7 @@ final class Guard
     /**
      * Rebuild POST array
      * De-obfuscate form field key/values
-     * 
+     *
      * @throws \Exception
      */
     private function rewritePost()
@@ -238,7 +240,7 @@ final class Guard
         {
             if( empty( $key ) ) continue;
             if( empty( $value ) ) continue;
-
+            
             if( ! array_key_exists( $value, $_POST ) )
             {
                 throw new \Exception(
@@ -248,14 +250,12 @@ final class Guard
                     , Http\Status::SERVICE_UNAVAILABLE
                 );
             }
-
-            //if( isset( $_POST[ $value ] ) ) {
+            
             $_POST[ $key ] = $_POST[ $value ];
             unset( $_POST[ $value ] );
-            //}
         }
     }
-
+    
     /**
      * CSRF form token validation
      * Removed from post data once validated
@@ -272,7 +272,7 @@ final class Guard
                 , Http\Status::BAD_REQUEST
             );
         }
-
+        
         if( ! $this->identity->has( Guard::FORM_TOKEN ) )
         {
             throw new \Exception(
@@ -281,10 +281,10 @@ final class Guard
                 , Http\Status::SERVICE_UNAVAILABLE
             );
         }
-
+        
         $csrfToken = $_POST[ Guard::CSRF_TOKEN ];
         $formToken = $this->identity->get( self::FORM_TOKEN );
-
+        
         if( false === ( hash_equals( $formToken, $csrfToken ) ) )
         {
             throw new \Exception(
@@ -293,7 +293,7 @@ final class Guard
                 , Http\Status::BAD_REQUEST
             );
         }
-
+        
         unset( $_POST[ Guard::CSRF_TOKEN ] );
     }
 }
