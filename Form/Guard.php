@@ -73,7 +73,7 @@ final class Guard
         if( ! is_string( $key ) )
         {
             throw new \Exception(
-                'Form Guard Error :: actionToken( $key ) - $key must be a string value. '
+                'FormGuard Error :: actionToken( $key ) - $key must be a string value. '
                 . 'Current type ( '
                 . gettype( $key )
                 . ' )'
@@ -152,7 +152,7 @@ final class Guard
         if( ! $this->identity->has( Guard::FORM_FIELDS ) )
         {
             throw new \Exception(
-                'Form Guard Error :: rewritePost() - '
+                'FormGuard Error :: getFields() - '
                 . 'Required session key ( '
                 . Guard::FORM_FIELDS
                 . ' ) was not found'
@@ -217,7 +217,7 @@ final class Guard
         if( $fieldCounter !== $postCounter )
         {
             throw new \Exception(
-                'Form Guard Error :: fieldsMatch() - Form field validation warning'
+                'FormGuard Error :: fieldsMatch() - Form field validation warning'
                 . ' - Potential form tampering detected ( POST field count : '
                 . $postCounter
                 . ' does not match original field count : '
@@ -244,7 +244,7 @@ final class Guard
             if( ! array_key_exists( $value, $_POST ) )
             {
                 throw new \Exception(
-                    'Form Guard :: Expected form field value not found in post data ( '
+                    'FormGuard Error :: Expected form field value not found in post data ( '
                     . $value
                     . ' )'
                     , Http\Status::SERVICE_UNAVAILABLE
@@ -267,7 +267,7 @@ final class Guard
         if( ! isset( $_POST[ Guard::CSRF_TOKEN ] ) )
         {
             throw new \Exception(
-                'Form Guard Error :: validateFormToken() - '
+                'FormGuard Error :: validateFormToken() - '
                 . 'CSRF token not found in POST data'
                 , Http\Status::BAD_REQUEST
             );
@@ -276,7 +276,7 @@ final class Guard
         if( ! $this->identity->has( Guard::FORM_TOKEN ) )
         {
             throw new \Exception(
-                'Form Guard Error :: validateFormToken() - '
+                'FormGuard Error :: validateFormToken() - '
                 . 'Form token not found in session'
                 , Http\Status::SERVICE_UNAVAILABLE
             );
@@ -288,7 +288,7 @@ final class Guard
         if( false === ( hash_equals( $formToken, $csrfToken ) ) )
         {
             throw new \Exception(
-                'Form Guard Error :: validateFormToken() - '
+                'FormGuard Error :: validateFormToken() - '
                 . 'CSRF token does not match original form token in session'
                 , Http\Status::BAD_REQUEST
             );
